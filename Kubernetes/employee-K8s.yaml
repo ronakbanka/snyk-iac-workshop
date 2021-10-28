@@ -13,12 +13,34 @@ spec:
       labels:
         app: snyk-employee-api
     spec:
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
       containers:
         - name: snyk-employee-api
           image: pasapples/springbootemployee:jib
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+                drop:
+                - all
+          resources:
+            requests:
+               memory: "64Mi"
+               cpu: "250m"
+            limits:
+               memory: "128Mi"
+               cpu: "500m"
 
 ---
 apiVersion: v1
@@ -33,6 +55,7 @@ spec:
     - port: 80
       targetPort: 8080
       protocol: TCP
+  loadBalancerSourceRanges: 10.0.0.0/24
   selector:
     app: snyk-employee-api
   type: LoadBalancer
