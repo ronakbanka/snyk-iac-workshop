@@ -219,6 +219,12 @@ Resources:
   CodePipelineArtifactBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
 
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
